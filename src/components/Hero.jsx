@@ -1,3 +1,4 @@
+import React from "react";
 import { motion } from "framer-motion";
 
 import { styles } from "../styles";
@@ -28,8 +29,8 @@ const Hero = () => {
       <ComputersCanvas />
 
       <div className='absolute xs:bottom-10 bottom-32 w-full flex justify-center items-center'>
-        <a href='#about'>
-          <div className='w-[35px] h-[64px] rounded-3xl border-4 border-secondary flex justify-center items-start p-2'>
+        <a href='#about' >
+          <div className='w-[35px] h-[60px] rounded-3xl border-4 border-double bg-gradient-to-r from-sky-500 to-indigo-500 flex justify-center items-start p-2'>
             <motion.div
               animate={{
                 y: [0, 24, 0],
@@ -39,13 +40,15 @@ const Hero = () => {
                 repeat: Infinity,
                 repeatType: "loop",
               }}
-              className='w-3 h-3 rounded-full bg-orange-500 mb-1'
+              className='w-3 h-3 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-900 shadow-lg shadow-blue-500/50  mb-1'
             />
+            
           </div>
         </a>
       </div>
     </section>
   );
 };
+
 
 export default Hero;

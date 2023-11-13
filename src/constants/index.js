@@ -8,12 +8,12 @@ import {
   html,
   css,
   reactjs,
-  redux,
+  blockchain,
   tailwind,
   nodejs,
   mongodb,
   git,
-  figma,
+  python,
   docker,
   meta,
   starbucks,
@@ -23,6 +23,7 @@ import {
   jobit,
   tripguide,
   threejs,
+  
 } from "../assets";
 
 export const navLinks = [
@@ -81,8 +82,8 @@ const technologies = [
     icon: reactjs,
   },
   {
-    name: "Redux Toolkit",
-    icon: redux,
+    name: "Python",
+    icon: python,
   },
   {
     name: "Tailwind CSS",
@@ -105,8 +106,8 @@ const technologies = [
     icon: git,
   },
   {
-    name: "figma",
-    icon: figma,
+    name: "Blockchain",
+    icon: blockchain,
   },
   {
     name: "docker",
@@ -155,7 +156,7 @@ const experiences = [
     ],
   },
   {
-    title: "Full stack Developer",
+    title: "Fullstack Developer",
     company_name: "Telnet",
     icon: meta,
     iconBg: "#E6DEDD",
@@ -173,10 +174,10 @@ const testimonials = [
   {
     testimonial:
       "I thought it was impossible to make a website as beautiful as our product, but Yusuf proved me wrong.",
-    name: "Omar Faruq",
+    name: "Omar Faruk",
     designation: "CFO",
     company: "Adventure Co",
-    image: "/src/assets/4.jpg",
+    image: "./src/assets/omar.jpg",
   },
   {
     testimonial:
@@ -184,7 +185,7 @@ const testimonials = [
     name: "Lee Brown",
     designation: "COO",
     company: "Agro Corp",
-    image: "/src/assets/5.jpeg",
+    image: "./src/assets/lee.jpg",
   },
   {
     testimonial:
@@ -192,7 +193,7 @@ const testimonials = [
     name: "ABD Ali",
     designation: "CTO",
     company: "420 Enterprises",
-    image: "/src/assets/6.jpg",
+    image: "./src/assets/abed.jpg",
   },
 ];
 
