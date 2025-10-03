@@ -2,13 +2,11 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   
-  // Build configuration (Vercel uses this)
   build: {
-    target: 'es2020', // More compatible than esnext
+    target: 'es2020',
     minify: 'esbuild',
     sourcemap: false,
     rollupOptions: {
@@ -21,13 +19,9 @@ export default defineConfig({
         }
       }
     },
-    chunkSizeWarningLimit: 1000,
-    // Add these for better Vercel compatibility
-    outDir: 'dist',
-    assetsDir: 'assets'
+    chunkSizeWarningLimit: 1000
   },
   
-  // Path resolution (keep this)
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
@@ -39,7 +33,6 @@ export default defineConfig({
     }
   },
   
-  // Optimization (keep this)
   optimizeDeps: {
     include: [
       'react',
@@ -49,10 +42,5 @@ export default defineConfig({
       '@react-three/drei',
       'framer-motion'
     ]
-  },
-  
-  // Environment variables (keep this)
-  define: {
-    __APP_VERSION__: JSON.stringify(process.env.npm_package_version)
   }
 })
