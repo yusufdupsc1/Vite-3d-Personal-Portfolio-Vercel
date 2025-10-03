@@ -9,8 +9,6 @@
 
 A cutting-edge 3D portfolio website built with modern web technologies and 2025 best practices. Features stunning 3D graphics, smooth animations, and a responsive design that showcases your work in an immersive way.
 
-![3D Portfolio Preview](https://i.ibb.co/9ykhLtM/Thumbnail.png)
-
 ## ✨ Features
 
 - 🎨 **Stunning 3D Graphics** - Interactive 3D models and animations using Three.js
