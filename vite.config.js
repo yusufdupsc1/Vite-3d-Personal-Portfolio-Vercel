@@ -6,46 +6,9 @@ import { resolve } from 'path'
 export default defineConfig({
   plugins: [react()],
   
-  // Development server configuration
-  server: {
-    host: '0.0.0.0',
-    port: 12000,
-    open: false,
-    cors: true,
-    allowedHosts: [
-      'localhost',
-      '127.0.0.1',
-      '0.0.0.0',
-      'work-1-zthztiysjpmqxibd.prod-runtime.all-hands.dev',
-      '.prod-runtime.all-hands.dev'
-    ],
-    headers: {
-      'Cross-Origin-Embedder-Policy': 'credentialless',
-      'Cross-Origin-Opener-Policy': 'same-origin'
-    }
-  },
-  
-  // Preview server configuration
-  preview: {
-    host: '0.0.0.0',
-    port: 12001,
-    cors: true,
-    allowedHosts: [
-      'localhost',
-      '127.0.0.1',
-      '0.0.0.0',
-      'work-2-zthztiysjpmqxibd.prod-runtime.all-hands.dev',
-      '.prod-runtime.all-hands.dev'
-    ],
-    headers: {
-      'Cross-Origin-Embedder-Policy': 'credentialless',
-      'Cross-Origin-Opener-Policy': 'same-origin'
-    }
-  },
-  
-  // Build configuration
+  // Build configuration (Vercel uses this)
   build: {
-    target: 'esnext',
+    target: 'es2020', // More compatible than esnext
     minify: 'esbuild',
     sourcemap: false,
     rollupOptions: {
@@ -58,10 +21,13 @@ export default defineConfig({
         }
       }
     },
-    chunkSizeWarningLimit: 1000
+    chunkSizeWarningLimit: 1000,
+    // Add these for better Vercel compatibility
+    outDir: 'dist',
+    assetsDir: 'assets'
   },
   
-  // Path resolution
+  // Path resolution (keep this)
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
@@ -73,7 +39,7 @@ export default defineConfig({
     }
   },
   
-  // Optimization
+  // Optimization (keep this)
   optimizeDeps: {
     include: [
       'react',
@@ -85,7 +51,7 @@ export default defineConfig({
     ]
   },
   
-  // Environment variables
+  // Environment variables (keep this)
   define: {
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version)
   }
