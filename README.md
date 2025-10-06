@@ -174,6 +174,14 @@ To activate automated deployments:
 
 1. Create a Vercel project that points to this repository.
 2. Add the following GitHub secrets: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, and `VERCEL_PROJECT_ID`.
+
+   | Secret | Where to find it |
+   | --- | --- |
+   | `VERCEL_TOKEN` | Vercel Dashboard → **Account Settings → Tokens** → “Create Token”. Copy the generated personal token. |
+   | `VERCEL_ORG_ID` | Vercel Dashboard → **Settings → General** for your team/personal account. The “Team ID” (or “Personal Account ID”) value is the organization ID. |
+   | `VERCEL_PROJECT_ID` | Open the project in the Vercel Dashboard → **Settings → General** → “Project ID”. |
+
+   > ℹ️ You only need to generate these once. Store them as repository secrets in GitHub (`Settings → Secrets and variables → Actions`).
 3. Push to `main` – GitHub Actions will build and ship the latest bundle to Vercel automatically.
 
 ### Manual / Self-Hosted Deployment
