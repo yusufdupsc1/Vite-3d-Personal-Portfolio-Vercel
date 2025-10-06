@@ -1,14 +1,23 @@
-import React, { useRef, useState } from "react";
+import React, { lazy, Suspense, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import emailjs from "@emailjs/browser";
 
 import { styles } from "../styles";
-import { EarthCanvas } from "./canvas";
 import { SectionWrapper } from "../hoc";
 import { slideIn } from "../utils/motion";
+import CanvasLoader from "./Loader";
+import { profile } from "../constants/profile";
+
+const EarthCanvas = lazy(() => import("./canvas/Earth"));
+
+const emailConfig = {
+  serviceId: import.meta.env.VITE_EMAILJS_SERVICE_ID,
+  templateId: import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+  publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+};
 
 const Contact = () => {
-  const formRef = useRef();
+  const formRef = useRef(null);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -16,69 +25,96 @@ const Contact = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("");
+
+  const isEmailConfigured = useMemo(
+    () => Boolean(emailConfig.serviceId && emailConfig.templateId && emailConfig.publicKey),
+    []
+  );
 
   const handleChange = (e) => {
     const { target } = e;
     const { name, value } = target;
 
-    setForm({
-      ...form,
+    setForm((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
-    emailjs
-      .send(
-        'service_dclfgqo',
-        'template_2hmt0ky',
+    if (!isEmailConfigured) {
+      setStatus("Email service is not configured yet. Please reach out directly via email.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setStatus("");
+
+      await emailjs.send(
+        emailConfig.serviceId,
+        emailConfig.templateId,
         {
           from_name: form.name,
-          to_name: "Yusuf Ali",
+          to_name: profile.name,
           from_email: form.email,
-          to_email: "yusufdupsc1@gmail.com",
+          to_email: profile.email,
           message: form.message,
         },
-        'nzcagLtCMytQ-mtHV'
-      )
-      .then(
-        () => {
-          setLoading(false);
-          alert("Thank you. I will get back to you as soon as possible.");
-
-          setForm({
-            name: "",
-            email: "",
-            message: "",
-          });
-        },
-        (error) => {
-          setLoading(false);
-          console.error(error);
-
-          alert("Ahh, something went wrong. Please try again.");
-        }
+        emailConfig.publicKey
       );
+
+      setStatus("Thanks for reaching out! I'll reply shortly.");
+      setForm({ name: "", email: "", message: "" });
+    } catch (error) {
+      console.error(error);
+      setStatus("Something went wrong. Please try again or email me directly.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div
-      className={`xl:mt-12 flex xl:flex-row flex-col-reverse gap-10 overflow-hidden`}
-    >
+    <div className='xl:mt-12 flex xl:flex-row flex-col-reverse gap-10 overflow-hidden'>
       <motion.div
         variants={slideIn("left", "tween", 0.2, 1)}
-        className='flex-[0.75] bg-black-100 p-8 rounded-2xl'
+        className='flex-[0.75] bg-black-100/80 p-8 rounded-2xl backdrop-blur'
       >
         <p className={styles.sectionSubText}>Get in touch</p>
-        <h3 className={styles.sectionHeadText}>Contact.</h3>
+        <h3 className={styles.sectionHeadText}>Let's collaborate.</h3>
+
+        <div className='mt-6 rounded-xl border border-white/5 bg-black-200/40 p-5 text-sm text-secondary shadow-lg shadow-black/20'>
+          <p className='font-semibold text-white'>Available for:</p>
+          <ul className='mt-3 list-disc space-y-2 pl-5'>
+            {profile.openTo.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+          <div className='mt-4 flex flex-wrap items-center gap-3 text-sm'>
+            <a
+              href={`mailto:${profile.email}`}
+              className='rounded-full border border-white/10 px-4 py-2 text-white transition-colors hover:border-[#915EFF] hover:text-[#915EFF]'
+            >
+              {profile.email}
+            </a>
+            <a
+              href={profile.socials.linkedin}
+              target='_blank'
+              rel='noopener noreferrer'
+              className='rounded-full border border-white/10 px-4 py-2 text-white transition-colors hover:border-[#915EFF] hover:text-[#915EFF]'
+            >
+              LinkedIn
+            </a>
+          </div>
+        </div>
 
         <form
           ref={formRef}
           onSubmit={handleSubmit}
-          className='mt-12 flex flex-col gap-8'
+          className='mt-10 flex flex-col gap-8'
         >
           <label className='flex flex-col'>
             <span className='text-white font-medium mb-4'>Your Name</span>
@@ -87,47 +123,61 @@ const Contact = () => {
               name='name'
               value={form.name}
               onChange={handleChange}
-              placeholder="What's your good name?"
-              className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium'
+              placeholder="What's your name?"
+              className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border border-transparent focus:border-[#915EFF] focus-visible:outline-none'
+              required
+              minLength={2}
             />
           </label>
           <label className='flex flex-col'>
-            <span className='text-white font-medium mb-4'>Your email</span>
+            <span className='text-white font-medium mb-4'>Your Email</span>
             <input
               type='email'
               name='email'
               value={form.email}
               onChange={handleChange}
-              placeholder="What's your web address?"
-              className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium'
+              placeholder='you@example.com'
+              className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border border-transparent focus:border-[#915EFF] focus-visible:outline-none'
+              required
             />
           </label>
           <label className='flex flex-col'>
-            <span className='text-white font-medium mb-4'>Your Message</span>
+            <span className='text-white font-medium mb-4'>How can I help?</span>
             <textarea
-              rows={7}
+              rows={6}
               name='message'
               value={form.message}
               onChange={handleChange}
-              placeholder='What you want to say?'
-              className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium'
+              placeholder='Tell me about your project, timeline, and goals.'
+              className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border border-transparent focus:border-[#915EFF] focus-visible:outline-none'
+              required
+              minLength={10}
             />
           </label>
 
           <button
             type='submit'
-            className='bg-tertiary py-3 px-8 rounded-xl outline-none w-fit text-white font-bold shadow-md shadow-primary'
+            className='bg-gradient-to-r from-[#915EFF] to-[#583b96] py-3 px-8 rounded-xl outline-none w-fit text-white font-semibold shadow-md shadow-primary/40 transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#915EFF] disabled:cursor-not-allowed disabled:opacity-60'
+            disabled={loading}
           >
-            {loading ? "Sending..." : "Send"}
+            {loading ? "Sending..." : "Send message"}
           </button>
+          {status && <p className='text-sm text-secondary'>{status}</p>}
+          {!isEmailConfigured && (
+            <p className='text-xs text-yellow-300'>
+              Email credentials are not configured. Update your <code>.env</code> or GitHub secrets to enable the form.
+            </p>
+          )}
         </form>
       </motion.div>
 
       <motion.div
         variants={slideIn("right", "tween", 0.2, 1)}
-        className='xl:flex-1 xl:h-auto md:h-[550px] h-[350px]'
+        className='xl:flex-1 xl:h-auto md:h-[550px] h-[360px]'
       >
-        <EarthCanvas />
+        <Suspense fallback={<CanvasLoader />}>
+          <EarthCanvas />
+        </Suspense>
       </motion.div>
     </div>
   );

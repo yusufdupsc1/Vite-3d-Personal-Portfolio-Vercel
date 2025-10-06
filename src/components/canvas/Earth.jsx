@@ -17,7 +17,7 @@ const EarthCanvas = () => {
     <Canvas
       shadows
       frameloop='demand'
-      dpr={[1, 2]}
+      dpr={[1, 1.5]}
       gl={{ preserveDrawingBuffer: true }}
       camera={{
         fov: 45,
@@ -42,3 +42,5 @@ const EarthCanvas = () => {
 };
 
 export default EarthCanvas;
+
+useGLTF.preload("./planet/scene.gltf");
