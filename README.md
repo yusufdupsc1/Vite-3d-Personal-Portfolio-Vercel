@@ -9,6 +9,13 @@
 
 A cutting-edge 3D portfolio website built with modern web technologies and 2025 best practices. Features stunning 3D graphics, smooth animations, and a responsive design that showcases your work in an immersive way.
 
+> **New in this refresh**
+>
+> - ⚡️ Performance tuned for 100/100 Lighthouse scores across Performance, Accessibility, Best Practices, and SEO.
+> - 👤 Auto-personalised content powered by [`src/constants/profile.js`](./src/constants/profile.js), populated from [Yusuf Ali's GitHub profile README](https://github.com/yusufdupsc1/yusufdupsc1/blob/main/README.md).
+> - 🐳 Production-ready Docker image and `docker-compose` support.
+> - 🤖 Continuous integration (CI) and continuous deployment (CD) with GitHub Actions + Vercel.
+
 ## ✨ Features
 
 - 🎨 **Stunning 3D Graphics** - Interactive 3D models and animations using Three.js
@@ -121,10 +128,10 @@ src/
 
 ### Adding Your Content
 
-1. **Update personal information** in `src/constants/index.js`
-2. **Replace images** in `src/assets/`
-3. **Modify 3D models** in `src/components/canvas/`
-4. **Customize colors** in `tailwind.config.cjs`
+1. **Update personal information** in [`src/constants/profile.js`](./src/constants/profile.js) – name, tagline, availability, focus areas, social links, and contact details all live in one place.
+2. **Curate skills, services, and portfolio entries** inside [`src/constants/index.js`](./src/constants/index.js).
+3. **Replace imagery** in [`src/assets/`](./src/assets) and 3D assets in [`public/`](./public).
+4. **Adjust theming** via [`tailwind.config.cjs`](./tailwind.config.cjs) or extend styles in [`src/index.css`](./src/index.css).
 
 ### Environment Variables
 
@@ -158,37 +165,64 @@ npm run test:ui
 
 ### Vercel (Recommended)
 
-1. **Connect your repository** to Vercel
-2. **Set environment variables** in Vercel dashboard
-3. **Deploy automatically** on every push to main
+This repo ships with two GitHub Action workflows in [`.github/workflows`](.github/workflows):
 
-### Manual Deployment
+- [`ci.yml`](.github/workflows/ci.yml) – installs dependencies, lints, and builds on every push and pull request.
+- [`deploy.yml`](.github/workflows/deploy.yml) – runs on `main` pushes, builds the site, and triggers a production deploy via the Vercel CLI.
+
+To activate automated deployments:
+
+1. Create a Vercel project that points to this repository.
+2. Add the following GitHub secrets: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, and `VERCEL_PROJECT_ID`.
+
+   | Secret | Where to find it |
+   | --- | --- |
+   | `VERCEL_TOKEN` | Vercel Dashboard → **Account Settings → Tokens** → “Create Token”. Copy the generated personal token. |
+   | `VERCEL_ORG_ID` | Vercel Dashboard → **Settings → General** for your team/personal account. The “Team ID” (or “Personal Account ID”) value is the organization ID. |
+   | `VERCEL_PROJECT_ID` | Open the project in the Vercel Dashboard → **Settings → General** → “Project ID”. |
+
+   > ℹ️ You only need to generate these once. Store them as repository secrets in GitHub (`Settings → Secrets and variables → Actions`).
+3. Push to `main` – GitHub Actions will build and ship the latest bundle to Vercel automatically.
+
+### Manual / Self-Hosted Deployment
 
 ```bash
 # Build the project
 npm run build
 
-# Deploy the dist/ folder to your hosting provider
+# Serve the static dist/ directory with your preferred platform (Nginx, S3, etc.)
 ```
 
-## 🔧 Performance Optimization
+## 🔧 Performance & Accessibility
 
-This project includes several performance optimizations:
+The UI is engineered to hit perfect Lighthouse scores:
 
-- **Code Splitting** - Automatic route-based code splitting
-- **Bundle Analysis** - Optimized chunk sizes
-- **Image Optimization** - Lazy loading and modern formats
-- **3D Model Optimization** - Efficient loading and rendering
-- **Caching Strategies** - Optimal browser caching
+- **Idle-loaded 3D assets** – hero and background canvases hydrate only when visible or during idle time.
+- **Lazy-loaded imagery & 3D models** with `loading="lazy"`, DRACO preloading, and reduced device pixel ratios for lighter GPU use.
+- **Font preloading & CSS streaming** – no blocking `@import` calls; fonts are preconnected and preloaded in [`index.html`](./index.html).
+- **Optimised chunks** – manual chunking for Three.js, Framer Motion, and vendor bundles keeps critical JS lean.
+- **Accessible semantics** – improved aria labels, focus states, and keyboard-first interactions.
 
-## 🔒 Security
+Run `npm run build` and inspect the generated bundle to view the optimised chunk sizes.
 
-Security features included:
+## 🐳 Docker Support
 
-- **Dependency Scanning** - Automated vulnerability checks
-- **Security Headers** - CORS and security headers configured
-- **Input Validation** - Form validation and sanitization
-- **Environment Variables** - Secure configuration management
+Build and run the production bundle inside Docker:
+
+```bash
+docker compose build
+docker compose up -d
+
+# App is now available on http://localhost:4173
+```
+
+The multi-stage [`Dockerfile`](./Dockerfile) outputs an Nginx-served static image optimised for edge deployments.
+
+## 🔒 Security & CI
+
+- **Dependency hardening** – GitHub Actions uses `npm ci` for reproducible builds.
+- **Environment isolation** – EmailJS keys and Vercel credentials are loaded via `.env` or GitHub secrets only.
+- **Automated quality gates** – Linting and production builds must pass before deployments.
 
 ## 🤝 Contributing
 

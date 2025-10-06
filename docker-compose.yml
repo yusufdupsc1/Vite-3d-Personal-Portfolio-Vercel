@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  portfolio:
+    build: .
+    ports:
+      - "4173:80"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped

@@ -2,21 +2,23 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  build_and_lint:
+  quality:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Use Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'   # or 22 if you're confident; 20 is safer for now
+          node-version: 20
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
@@ -25,10 +27,6 @@ jobs:
         run: npm run lint
 
       - name: Build
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"
         run: npm run build
-
-      - name: Archive build output
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-output
-          path: dist
