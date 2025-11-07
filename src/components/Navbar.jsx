@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { styles } from "../styles";
 import { navLinks } from "../constants";
@@ -10,6 +11,15 @@ const Navbar = () => {
   const [active, setActive] = useState("");
   const [toggle, setToggle] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const socialLinks = useMemo(
+    () => [
+      { label: "GitHub", url: profile.socials.github },
+      { label: "LinkedIn", url: profile.socials.linkedin },
+      { label: "Twitter", url: profile.socials.twitter }
+    ].filter((social) => Boolean(social.url)),
+    []
+  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,6 +32,34 @@ const Navbar = () => {
   }, []);
 
   const closeMenu = () => setToggle(false);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return undefined;
+
+    const target = document.documentElement;
+    if (toggle) {
+      target.style.overflow = "hidden";
+    } else {
+      target.style.overflow = "";
+    }
+
+    return () => {
+      target.style.overflow = "";
+    };
+  }, [toggle]);
+
+  useEffect(() => {
+    if (!toggle) return undefined;
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        closeMenu();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [toggle]);
 
   return (
     <nav
@@ -92,6 +130,7 @@ const Navbar = () => {
           onClick={() => setToggle((prev) => !prev)}
           aria-label='Toggle navigation'
           aria-expanded={toggle}
+          aria-controls='mobile-nav'
         >
           <img
             src={toggle ? close : menu}
@@ -99,45 +138,95 @@ const Navbar = () => {
             className='w-[28px] h-[28px] object-contain'
           />
         </button>
-
-        <div
-          className={`${
-            toggle ? "flex" : "hidden"
-          } sm:hidden p-6 black-gradient absolute top-20 right-0 mx-4 my-2 min-w-[200px] z-10 rounded-xl shadow-lg shadow-black/20`}
-        >
-          <ul className='list-none flex justify-start items-start flex-1 flex-col gap-4'>
-            {navLinks.map((nav) => (
-              <li
-                key={nav.id}
-                className={`font-medium cursor-pointer text-[16px] ${
-                  active === nav.title ? "text-white" : "text-secondary"
-                }`}
-              >
-                <a
-                  href={`#${nav.id}`}
-                  onClick={() => {
-                    setActive(nav.title);
-                    closeMenu();
-                  }}
-                >
-                  {nav.title}
-                </a>
-              </li>
-            ))}
-            <li>
-              <a
-                href={profile.socials.github}
-                target='_blank'
-                rel='noopener noreferrer'
-                className='font-medium text-[16px] text-secondary hover:text-white transition-colors'
-                onClick={closeMenu}
-              >
-                GitHub
-              </a>
-            </li>
-          </ul>
-        </div>
       </div>
+
+      <AnimatePresence>
+        {toggle && (
+          <motion.div
+            key='mobile-nav'
+            id='mobile-nav'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className='sm:hidden fixed inset-0 z-30'
+            role='dialog'
+            aria-modal='true'
+          >
+            <button
+              type='button'
+              aria-label='Close navigation'
+              className='absolute inset-0 bg-black/60 backdrop-blur-sm'
+              onClick={closeMenu}
+            />
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", stiffness: 260, damping: 30 }}
+              className='absolute right-0 top-0 h-full w-full max-w-xs bg-primary/95 border-l border-white/10 shadow-2xl flex flex-col'
+            >
+              <div className='flex items-center justify-between px-6 py-5 border-b border-white/10'>
+                <div className='flex flex-col text-left'>
+                  <span className='text-white text-lg font-semibold'>{profile.name}</span>
+                  <span className='text-secondary text-xs uppercase tracking-[0.2em]'>
+                    {profile.title}
+                  </span>
+                </div>
+                <button
+                  type='button'
+                  onClick={closeMenu}
+                  className='text-secondary hover:text-white transition-colors'
+                  aria-label='Close menu'
+                >
+                  <img src={close} alt='Close menu' className='w-6 h-6' />
+                </button>
+              </div>
+
+              <div className='flex-1 overflow-y-auto px-6 py-8'>
+                <ul className='space-y-6'>
+                  {navLinks.map((nav) => (
+                    <li key={nav.id}>
+                      <a
+                        href={`#${nav.id}`}
+                        onClick={() => {
+                          setActive(nav.title);
+                          closeMenu();
+                        }}
+                        className={`block text-lg font-medium tracking-wide transition-colors ${
+                          active === nav.title ? "text-white" : "text-secondary hover:text-white"
+                        }`}
+                      >
+                        {nav.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className='px-6 py-6 border-t border-white/10'>
+                <span className='block text-xs uppercase text-secondary tracking-[0.3em] mb-4'>
+                  Connect
+                </span>
+                <div className='flex flex-col gap-3'>
+                  {socialLinks.map((social) => (
+                    <a
+                      key={social.label}
+                      href={social.url}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='text-sm font-medium text-secondary hover:text-white transition-colors'
+                      onClick={closeMenu}
+                    >
+                      {social.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };
