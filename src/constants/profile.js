@@ -5,7 +5,7 @@ export const profile = {
   status: "Available for Opportunities",
   location: "Dhaka, Bangladesh",
   email: "yusufdupsc1@gmail.com",
-  portfolio: "https://ali-3d-portfolio.vercel.app",
+  portfolio: "https://yusuf1.dev",
   mission: "Building scalable systems that empower users.",
   heroHighlights: [
     "Building scalable full-stack applications",

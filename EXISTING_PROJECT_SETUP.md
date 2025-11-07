@@ -1,6 +1,6 @@
 # 🎯 Setup CI/CD for Your Live Portfolio
 
-Your portfolio is already live at: **https://ali-3d-portfolio.vercel.app/**
+Your portfolio is already live at: **https://yusuf1.dev/**
 
 Now let's connect it to the CI/CD pipeline so it automatically updates when you push code!
 
@@ -8,11 +8,11 @@ Now let's connect it to the CI/CD pipeline so it automatically updates when you 
 
 ### **Method 1: Direct Search**
 1. Go to: **https://vercel.com/dashboard**
-2. **Search for "ali-3d-portfolio"** in your projects list
+2. **Search for "yusuf1-dev"** in your projects list
 3. **Click on the project** to open it
 
 ### **Method 2: From URL**
-Since your live site is `ali-3d-portfolio.vercel.app`, your project name is likely `ali-3d-portfolio`
+Since your live site is `yusuf1.dev`, your project name is likely `yusuf1-dev`
 
 ## 📋 Step 2: Get Your Project ID
 
@@ -62,7 +62,7 @@ Value: [the prj_xxxxx from step 2]
 
 ## ✅ What Will Happen After Merging
 
-Your existing `https://ali-3d-portfolio.vercel.app/` will be updated with:
+Your existing `https://yusuf1.dev/` will be updated with:
 
 ### **🔧 Technical Improvements:**
 - ✅ **React 18.3.1** - Latest version with better performance
@@ -120,7 +120,7 @@ After merging the PR, verify everything works:
 - Look for green checkmarks ✅ on "Deploy to Vercel"
 
 ### **2. Check Your Live Site:**
-- Visit: https://ali-3d-portfolio.vercel.app/
+- Visit: https://yusuf1.dev/
 - Verify all 3D animations still work
 - Check that loading is faster
 - Test all interactive elements
@@ -133,7 +133,7 @@ After merging the PR, verify everything works:
 
 ### **If you can't find the project:**
 - Make sure you're logged into the correct Vercel account
-- Try searching for "ali-3d-portfolio" in the dashboard
+- Try searching for "yusuf1-dev" in the dashboard
 - Check if the project might be under a different name
 
 ### **If GitHub Actions fail:**
@@ -160,8 +160,8 @@ If you run into any issues:
 1. **Double-check the secret names** - they must be exactly as shown above
 2. **Verify your Vercel token is valid** and has the right permissions
 3. **Check the GitHub Actions logs** for specific error messages
-4. **Make sure you're using the same Vercel account** that owns the `ali-3d-portfolio` project
+4. **Make sure you're using the same Vercel account** that owns the `yusuf1-dev` project
 
 Once this is set up, you'll have a fully automated, modern 3D portfolio that updates itself every time you push code! 🌟
 
-Your portfolio at `https://ali-3d-portfolio.vercel.app/` will become even more impressive with all the 2025 modernizations! 🚀
+Your portfolio at `https://yusuf1.dev/` will become even more impressive with all the 2025 modernizations! 🚀
